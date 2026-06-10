@@ -202,7 +202,7 @@
       position: fixed;
       bottom: 1.5rem;
       left: 50%;
-      transform: translateX(-50%) translateY(150%);
+      transform: translateX(-50%) translateY(200%);
       background: var(--ink);
       color: var(--white);
       font-size: 0.875rem;
@@ -410,9 +410,9 @@
         if (!putRes.ok) throw new Error();
 
         renderStatus(trimmed);
-        showToast(status === 'on' ? '✅ Thanks! Reported as ON.' : '❌ Thanks! Reported as OFF.');
+        showToast(status === 'on' ? 'Thanks! Splash pad reported as ON.' : 'Thanks! Splash pad reported as OFF.');
       } catch (e) {
-        showToast('Something went wrong. Please try again.');
+        showToast('Something went wrong. Please refresh the page and try again.');
       } finally {
         setButtonsEnabled(true);
       }
