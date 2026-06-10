@@ -298,6 +298,8 @@
 
   <footer>
     The Bear Square Splash Watch is a crowdsourced resource. Live status reports come from members of the local community. Reports reflect conditions at the time of submission and cannot be verified or guaranteed.
+    <br>
+    This site is not affiliated with or endorsed by Bear Square.
   </footer>
 
   <div class="toast" id="toast"></div>
@@ -350,6 +352,8 @@
     }
 
     function renderStatus(reports) {
+      const STALE_HOURS = 24;
+
       if (!reports || reports.length === 0) {
         statusWord.className = 'status-word unknown';
         statusWord.textContent = '?';
@@ -358,8 +362,19 @@
         historyList.innerHTML = '<li style="color: var(--muted); font-size: 0.85rem;">No reports yet.</li>';
         return;
       }
-
+      
       const latest = reports[reports.length - 1];
+      const ageHours = (Date.now() - new Date(latest.ts)) / (1000 * 60 * 60);
+      
+      if (ageHours > STALE_HOURS) {
+        statusWord.className = 'status-word unknown';
+        statusWord.textContent = '?';
+        statusCard.className = 'status-card';
+        statusMeta.innerHTML = 'No reports in the last 24 hours. Be the first!';
+        historyList.innerHTML = '<li style="color: var(--muted); font-size: 0.85rem;">No reports in the last 24 hours.</li>';
+        return;
+      }
+      
       const isOn = latest.status === 'on';
 
       statusWord.className = `status-word ${latest.status}`;
