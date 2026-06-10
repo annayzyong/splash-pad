@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bear Square Splash Watch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:   #B8E4F9;
+      --yellow: #FFD95A;
+      --coral:  #FF8B6A;
+      --ink:    #1A1A2E;
+      --ink2:   #4a4a6a;
+      --muted:  #8888aa;
+      --white:  #ffffff;
+      --bg:     #f7f9fc;
+      --radius: 14px;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    header {
+      text-align: center;
+      padding: 2.5rem 1rem 0;
+    }
+
+    header h1 {
+      font-family: 'Baloo 2', sans-serif;
+      font-size: clamp(1.3rem, 4vw, 1.6rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+
+    header p.subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    main {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 4rem;
+    }
+
+    /* ── Status card ── */
+    .status-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1.5px solid #e0e4ef;
+      padding: 2rem 1.5rem 1.75rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.3s;
+    }
+
+    .status-word {
+      font-family: 'Baloo 2', sans-serif;
+      font-size: clamp(5rem, 28vw, 8rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      transition: color 0.4s;
+    }
+
+    .status-word.on   { color: #0aaa5a; }
+    .status-word.off  { color: var(--coral); }
+    .status-word.unknown { color: var(--muted); }
+
+    .status-card.on  { border-color: #b2f0d4; }
+    .status-card.off { border-color: #ffd0c4; }
+
+    .status-meta {
+      margin-top: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+      min-height: 1.4em;
+    }
+
+    .status-meta strong {
+      color: var(--ink2);
+      font-weight: 500;
+    }
+
+    /* ── Report buttons ── */
+    .report-section {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1.5px solid #e0e4ef;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .report-section h2 {
+      font-family: 'Baloo 2', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--ink);
+    }
+
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+    }
+
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-on {
+      background: #d4f5e6;
+      color: #0a6e3a;
+    }
+    .btn-on:hover:not(:disabled) { background: #bfeed8; }
+
+    .btn-off {
+      background: #fde6df;
+      color: #b83d1e;
+    }
+    .btn-off:hover:not(:disabled) { background: #fad3c7; }
+
+    .btn-icon { font-size: 1.1em; }
+
+    /* ── History ── */
+    .history-section h2 {
+      font-family: 'Baloo 2', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--ink);
+    }
+
+    .history-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.85rem;
+      color: var(--ink2);
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot.on  { background: #0aaa5a; }
+    .dot.off { background: var(--coral); }
+
+    .history-time { color: var(--muted); margin-left: auto; white-space: nowrap; }
+
+    /* ── Confirmation toast ── */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      background: var(--ink);
+      color: var(--white);
+      font-size: 0.875rem;
+      padding: 0.65rem 1.25rem;
+      border-radius: 100px;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── Loading ── */
+    .loading-text {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.875rem;
+      padding: 0.5rem 0;
+    }
+
+    /* ── Error notice ── */
+    .error-notice {
+      background: #fff8e6;
+      border: 1px solid #f5d878;
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      font-size: 0.825rem;
+      color: #7a5b00;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+
+    /* ── Setup notice ── */
+    .setup-notice {
+      background: #eef3ff;
+      border: 1px solid #c7d4f7;
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      font-size: 0.825rem;
+      color: #2d47a0;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .setup-notice strong { font-weight: 600; }
+    .setup-notice code {
+      background: #dde6ff;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.8em;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.775rem;
+      color: var(--muted);
+      padding-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>💦 Bear Square Splash Watch</h1>
+    <p class="subtitle">Real-time reports from the community – Your neighbors are watching so you don't have to find out the hard way.</p>
+  </header>
+
+  <main>
+
+    <div class="error-notice" id="error-notice">
+      Couldn't load data right now. Check your JSONBin credentials or try refreshing.
+    </div>
+
+    <!-- Status display -->
+    <div class="status-card" id="status-card">
+      <div class="status-word unknown" id="status-word">?</div>
+      <div class="status-meta" id="status-meta">
+        <span class="loading-text">Loading latest report…</span>
+      </div>
+    </div>
+
+    <!-- Report buttons -->
+    <div class="report-section">
+      <h2>Is the splash pad splashing?</h2>
+      <div class="btn-group">
+        <button class="btn btn-on" id="btn-on" onclick="submitReport('on')" disabled>
+          <span class="btn-icon">🎉</span> Yes, it's on!
+        </button>
+        <button class="btn btn-off" id="btn-off" onclick="submitReport('off')" disabled>
+          <span class="btn-icon">😭</span> No, it's not on.
+        </button>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="history-section">
+      <h2>Recent reports</h2>
+      <ul class="history-list" id="history-list">
+        <li class="loading-text">Loading…</li>
+      </ul>
+    </div>
+
+  </main>
+
+  <footer>
+    The Bear Square Splash Watch is a crowdsourced resource. Live status reports come from members of the local community. Reports reflect conditions at the time of submission and cannot be verified or guaranteed.
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ── CONFIG ── Replace these two values after setting up JSONBin.io ──
+    const BIN_ID     = '6a29bd54f5f4af5e29da698c';       // e.g. '64abc123def456789'
+    const ACCESS_KEY = '$2a$10$UDCo7Bku7/qHL3uMMxbKzukXKqZzh./ajo2/Zpx/5nFhFYv0ME8iy';   // e.g. '$2a$10$...'
+    // ────────────────────────────────────────────────────────────────────
+
+    const API_BASE = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+    const HEADERS  = {
+      'Content-Type': 'application/json',
+      'X-Master-Key': ACCESS_KEY,
+      'X-Bin-Versioning': 'false'
+    };
+    const MAX_HISTORY = 20; // keep last N reports
+
+    const isSetup = BIN_ID !== 'YOUR_BIN_ID' && ACCESS_KEY !== 'YOUR_ACCESS_KEY';
+
+    // ── DOM refs ──
+    const statusCard  = document.getElementById('status-card');
+    const statusWord  = document.getElementById('status-word');
+    const statusMeta  = document.getElementById('status-meta');
+    const historyList = document.getElementById('history-list');
+    const btnOn       = document.getElementById('btn-on');
+    const btnOff      = document.getElementById('btn-off');
+    const toast       = document.getElementById('toast');
+    const errorNotice = document.getElementById('error-notice');
+    const setupNotice = document.getElementById('setup-notice');
+
+    if (isSetup) setupNotice.style.display = 'none';
+
+    // ── Helpers ──
+    function timeAgo(isoString) {
+      const diff = Math.floor((Date.now() - new Date(isoString)) / 1000);
+      if (diff < 60)  return 'just now';
+      if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+      return `${Math.floor(diff / 86400)}d ago`;
+    }
+
+    function formatFull(isoString) {
+      return new Date(isoString).toLocaleString(undefined, {
+        weekday: 'short', month: 'short', day: 'numeric',
+        hour: 'numeric', minute: '2-digit'
+      });
+    }
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    function setButtonsEnabled(enabled) {
+      btnOn.disabled  = !enabled;
+      btnOff.disabled = !enabled;
+    }
+
+    // ── Render state ──
+    function renderStatus(reports) {
+      if (!reports || reports.length === 0) {
+        statusWord.className = 'status-word unknown';
+        statusWord.textContent = '?';
+        statusCard.className = 'status-card';
+        statusMeta.innerHTML = 'No reports yet. Be the first!';
+        historyList.innerHTML = '<li style="color: var(--muted); font-size: 0.85rem;">No reports yet.</li>';
+        return;
+      }
+
+      const latest = reports[reports.length - 1];
+      const isOn = latest.status === 'on';
+
+      statusWord.className = `status-word ${latest.status}`;
+      statusWord.textContent = isOn ? 'ON' : 'OFF';
+      statusCard.className = `status-card ${latest.status}`;
+      statusMeta.innerHTML = `Last reported <strong>${timeAgo(latest.ts)}</strong> · ${formatFull(latest.ts)}`;
+
+      // history (newest first)
+      const recent = [...reports].reverse().slice(0, 8);
+      historyList.innerHTML = recent.map(r => `
+        <li class="history-item">
+          <span class="dot ${r.status}"></span>
+          <span>${r.status === 'on' ? 'Splash pad was <strong>on</strong>' : 'Splash pad was <strong>off</strong>'}</span>
+          <span class="history-time">${timeAgo(r.ts)}</span>
+        </li>
+      `).join('');
+    }
+
+    // ── Load data ──
+    async function loadReports() {
+      if (!isSetup) {
+        renderStatus([]);
+        setButtonsEnabled(true);
+        return;
+      }
+      try {
+        const res = await fetch(API_BASE + '/latest', { headers: HEADERS });
+        if (!res.ok) throw new Error('Fetch failed');
+        const data = await res.json();
+        const reports = data.record.reports || [];
+        renderStatus(reports);
+        setButtonsEnabled(true);
+      } catch (e) {
+        errorNotice.style.display = 'block';
+        renderStatus([]);
+        setButtonsEnabled(true);
+      }
+    }
+
+    // ── Submit report ──
+    async function submitReport(status) {
+      if (!isSetup) {
+        showToast('Set up JSONBin first – see setup instructions above.');
+        return;
+      }
+      setButtonsEnabled(false);
+      try {
+        // Fetch current data first
+        const getRes = await fetch(API_BASE + '/latest', { headers: HEADERS });
+        if (!getRes.ok) throw new Error();
+        const current = await getRes.json();
+        const reports = current.record.reports || [];
+
+        // Append new report, trim to MAX_HISTORY
+        reports.push({ status, ts: new Date().toISOString() });
+        const trimmed = reports.slice(-MAX_HISTORY);
+
+        // Save back
+        const putRes = await fetch(API_BASE, {
+          method: 'PUT',
+          headers: HEADERS,
+          body: JSON.stringify({ reports: trimmed })
+        });
+        if (!putRes.ok) throw new Error();
+
+        renderStatus(trimmed);
+        showToast(status === 'on' ? '✅ Thanks! Reported as ON.' : '❌ Thanks! Reported as OFF.');
+      } catch (e) {
+        showToast('Something went wrong. Please try again.');
+      } finally {
+        setButtonsEnabled(true);
+      }
+    }
+
+    loadReports();
+  </script>
+
+</body>
+</html>
