@@ -34,18 +34,22 @@
       padding: 2.5rem 1rem 0;
     }
 
-    header h1 {
+    header h2 {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(1.3rem, 4vw, 1.6rem);
+      font-size: clamp(1.4rem, 4vw, 1.8rem);
       font-weight: 700;
-      letter-spacing: -0.01em;
+      letter-spacing: -0.02em;
       color: var(--ink);
+      margin-top: 0.75rem;
+      margin-bottom: 0.3rem;
     }
-
-    header p.subtitle {
+    
+    header .headline-sub {
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 0.9rem;
-      color: var(--muted);
-      margin-top: 0.2rem;
+      font-weight: 500;
+      color: var(--ink2);
+      margin-top: 0.15rem;
     }
 
     main {
@@ -251,9 +255,11 @@
 <body>
 
   <header>
-    <h1>💦 Bear Square Splash Watch 💦</h1>
-    <p class="subtitle">Your neighbors are watching so you don't have to find out the hard way.</p>
-  </header>
+  <img src="splashwatchlogo.png" alt="Bear Square Splash Watch" style="width: 180px; height: 180px; object-fit: contain;" />
+  <h2>Is the Splash Pad On?</h2>
+  <p class="headline-sub">A live tracker for the splash pad @ the Station at Riverdale Park.</p>
+  <p class="headline-sub">Reported by the community, for the community.</p>
+</header>
 
   <main>
 
