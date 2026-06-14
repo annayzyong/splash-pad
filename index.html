@@ -396,7 +396,7 @@
       statusCard.className = `status-card ${latest.status}`;
       statusMeta.innerHTML = `Last reported <strong>${timeAgo(latest.ts)}</strong> · ${formatFull(latest.ts)}`;
 
-      const recent = [...reports].reverse().slice(0, 8);
+      const recent = [...reports].reverse().slice(0, 10);
       historyList.innerHTML = recent.map(r => `
         <li class="history-item">
           <span class="dot ${r.status}"></span>
